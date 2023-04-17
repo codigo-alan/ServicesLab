@@ -27,6 +27,16 @@ kotlin {
         val jvmMain by getting {
             dependencies {
                 implementation(compose.desktop.currentOs)
+                //material
+                @OptIn(org.jetbrains.compose.ExperimentalComposeLibrary::class)
+                implementation(compose.material3)
+                //postgresSQL
+                implementation("org.postgresql:postgresql:42.5.0")
+                //exposed orm
+                implementation("org.jetbrains.exposed:exposed-core:0.41.1")
+                implementation("org.jetbrains.exposed:exposed-dao:0.41.1")
+                implementation("org.jetbrains.exposed:exposed-jdbc:0.41.1")
+                implementation("org.slf4j:slf4j-simple:2.0.3") //what is this?
             }
         }
         val jvmTest by getting
