@@ -1,4 +1,4 @@
-package models
+package models.service
 
 /**
  * Not in use yet.

@@ -8,5 +8,12 @@
       <jdbc-url>jdbc:postgresql://localhost:5432/serviceslab</jdbc-url>
       <working-dir>$ProjectFileDir$</working-dir>
     </data-source>
+    <data-source source="LOCAL" name="serviceslab_win@localhost" uuid="99e36b88-8507-425a-806a-dcaa4493449e">
+      <driver-ref>postgresql</driver-ref>
+      <synchronize>true</synchronize>
+      <jdbc-driver>org.postgresql.Driver</jdbc-driver>
+      <jdbc-url>jdbc:postgresql://localhost:5432/serviceslab</jdbc-url>
+      <working-dir>$ProjectFileDir$</working-dir>
+    </data-source>
   </component>
 </project>
