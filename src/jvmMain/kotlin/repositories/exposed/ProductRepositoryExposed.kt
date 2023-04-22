@@ -1,9 +1,10 @@
-package repositories
+package repositories.exposed
 
 import interfaces.ProductRepository
 import models.product.Product
 import models.product.exposed.ProductDaoTable
 import org.jetbrains.exposed.sql.ResultRow
+import org.jetbrains.exposed.sql.insert
 import org.jetbrains.exposed.sql.selectAll
 import org.jetbrains.exposed.sql.transactions.transaction
 
@@ -19,7 +20,14 @@ class ProductRepositoryExposed : ProductRepository {
     }
 
     override fun insert(product: Product) {
-        TODO("Not yet implemented")
+        transaction {
+            ProductDaoTable.insert {
+                it[serialNumber] = product.serialNumber
+                it[model] = product.model
+                it[owner] = product.owner
+                it[service] = product.service
+            }
+        }
     }
 
     private fun dbToModel(resultRow: ResultRow): Product =
