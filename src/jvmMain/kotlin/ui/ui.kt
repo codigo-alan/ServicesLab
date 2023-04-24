@@ -82,11 +82,15 @@ fun AddProductForm() {
     }
 }
 
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
 @Preview
 fun ProductsList(products: List<Product>) {
 
-    //var productsInner by remember { mutableStateOf(products) }
+    var showDialog by remember { mutableStateOf(false) }
+    var productsInner by remember { mutableStateOf(ServiceRepository.productRepository.list()) }
+
+    MyAlertDialog(showDialog, {showDialog = false}, {showDialog = false})
 
     Column(verticalArrangement = Arrangement.spacedBy(10.dp), modifier = Modifier.padding(16.dp)) {
         Text(
@@ -94,7 +98,7 @@ fun ProductsList(products: List<Product>) {
             style = MaterialTheme.typography.titleLarge,
         )
         LazyColumn() {
-            items(products){product ->
+            items(productsInner){product ->
                 Card(
                     elevation = 4.dp,
                     shape = RoundedCornerShape(8.dp),
@@ -120,13 +124,13 @@ fun ProductsList(products: List<Product>) {
                             Row(horizontalArrangement = Arrangement.End,
                                 modifier = Modifier.fillMaxWidth()
                             ) {
-                                IconButton(onClick = {}){
+                                IconButton(onClick = { showDialog = true } ){
                                     Icon( Icons.Filled.Edit, contentDescription = "Edit product")
                                 }
 
                                 IconButton(onClick = {
-                                    //ServiceRepository.productRepository.delete(product.serialNumber)
-                                    //products = ServiceRepository.productRepository.list()
+                                    ServiceRepository.productRepository.delete(product.serialNumber)
+                                    productsInner = ServiceRepository.productRepository.list()
                                 }){
                                     Icon( Icons.Filled.Clear, contentDescription = "Delete product")
                                 }
