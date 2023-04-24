@@ -22,10 +22,11 @@ import ui.ProductsList
 fun App() {
 
     MaterialTheme() {
-        LazyRow() {
+        /*LazyRow() {
             item { AddProductForm() }
             //item { ProductsList() }
-        }
+        }*/
+        AddProductForm()
     }
 }
 

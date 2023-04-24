@@ -4,6 +4,8 @@ import interfaces.ProductRepository
 import models.product.Product
 import models.product.exposed.ProductDaoTable
 import org.jetbrains.exposed.sql.ResultRow
+import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
+import org.jetbrains.exposed.sql.deleteWhere
 import org.jetbrains.exposed.sql.insert
 import org.jetbrains.exposed.sql.selectAll
 import org.jetbrains.exposed.sql.transactions.transaction
@@ -27,6 +29,12 @@ class ProductRepositoryExposed : ProductRepository {
                 it[owner] = product.owner
                 it[service] = product.service
             }
+        }
+    }
+
+    override fun delete(serialNumber: String) {
+        transaction {
+            ProductDaoTable.deleteWhere { ProductDaoTable.serialNumber eq serialNumber }
         }
     }
 
