@@ -1,4 +1,4 @@
-package ui
+package view
 
 import androidx.compose.desktop.ui.tooling.preview.Preview
 import androidx.compose.foundation.layout.*
@@ -9,6 +9,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Clear
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.*
@@ -76,7 +77,11 @@ fun AddProductForm() {
             }
         }
         item() {
-            products = ProductsList(products)
+            //products = ProductsList(products)
+            ProductsList(products) {
+                ServiceRepository.productRepository.delete(it.serialNumber)
+                products = ServiceRepository.productRepository.list()
+            }
         }
     }
 }
@@ -84,11 +89,11 @@ fun AddProductForm() {
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 @Preview
-fun ProductsList(products: List<Product>): List<Product> {
+fun ProductsList(products: List<Product>, onDelete: (Product) -> Unit) {
 
     var showDialogEdit by remember { mutableStateOf(false) }
     var showDialogDelete by remember { mutableStateOf(false) }
-    var productsInner by remember { mutableStateOf(ServiceRepository.productRepository.list()) }
+    var productSelected by remember { mutableStateOf(Product("","","","")) }
 
     val deleteDialogContent = listOf("Delete Product", "Do you want to delete this product?")
     val editDialogContent = listOf("Edit Product", "Not implemented yet.")
@@ -99,7 +104,7 @@ fun ProductsList(products: List<Product>): List<Product> {
             style = MaterialTheme.typography.titleLarge,
         )
         LazyColumn() {
-            items(productsInner){product ->
+            items(products){product ->
 
                 Card(
                     elevation = 4.dp,
@@ -126,13 +131,18 @@ fun ProductsList(products: List<Product>): List<Product> {
                             Row(horizontalArrangement = Arrangement.End,
                                 modifier = Modifier.fillMaxWidth()
                             ) {
+                                //Edit button
                                 IconButton(onClick = { showDialogEdit = true } ){
                                     Icon( Icons.Filled.Edit, contentDescription = "Edit product")
                                 }
 
-                                IconButton(onClick = {
-                                    showDialogDelete = true
-                                }){
+                                //Delete button
+                                IconButton(
+                                    onClick = {
+                                        showDialogDelete = true
+                                        productSelected = product
+                                    }
+                                ){
                                     Icon( Icons.Filled.Clear, contentDescription = "Delete product")
                                 }
                             }
@@ -152,21 +162,21 @@ fun ProductsList(products: List<Product>): List<Product> {
 
                     }
                 }
+                //Delete dialog
                 MyAlertDialog(showDialogDelete, deleteDialogContent,
                     {
                         showDialogDelete = false
                     },
                     {
                         showDialogDelete = false
-                        ServiceRepository.productRepository.delete(product.serialNumber)
-                        productsInner = ServiceRepository.productRepository.list()
+                        onDelete(productSelected) //call lambda with product to delete
                     }
                 )
+                //Edit dialog
                 MyAlertDialog(showDialogEdit, editDialogContent, {showDialogEdit = false}, {showDialogEdit = false})
             }
         }
     }
 
-    return productsInner
 
 }
