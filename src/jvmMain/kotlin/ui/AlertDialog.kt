@@ -10,15 +10,15 @@ import androidx.compose.runtime.*
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun MyAlertDialog(state: Boolean, onDismiss: () -> Unit, onConfirm: () -> Unit){
+fun MyAlertDialog(state: Boolean, content: List<String>, onDismiss: () -> Unit, onConfirm: () -> Unit){
 
     if (state) {
         AlertDialog(
             onDismissRequest = { onDismiss() },
-            title = { Text(text = "Edit product") },
-            text = { Text(text = "Not implemented yet") },
+            title = { Text(text = content.first()) },
+            text = { Text(text = content.last()) },
             confirmButton = {
-                Button(onClick = { onDismiss() }) {
+                Button(onClick = { onConfirm() }) {
                     Text(text = "OK")
                 }
             },

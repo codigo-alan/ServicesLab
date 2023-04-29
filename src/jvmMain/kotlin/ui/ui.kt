@@ -9,7 +9,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Clear
-import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.*
@@ -77,7 +76,7 @@ fun AddProductForm() {
             }
         }
         item() {
-            ProductsList(products)
+            products = ProductsList(products)
         }
     }
 }
@@ -85,12 +84,14 @@ fun AddProductForm() {
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 @Preview
-fun ProductsList(products: List<Product>) {
+fun ProductsList(products: List<Product>): List<Product> {
 
-    var showDialog by remember { mutableStateOf(false) }
+    var showDialogEdit by remember { mutableStateOf(false) }
+    var showDialogDelete by remember { mutableStateOf(false) }
     var productsInner by remember { mutableStateOf(ServiceRepository.productRepository.list()) }
 
-    MyAlertDialog(showDialog, {showDialog = false}, {showDialog = false})
+    val deleteDialogContent = listOf("Delete Product", "Do you want to delete this product?")
+    val editDialogContent = listOf("Edit Product", "Not implemented yet.")
 
     Column(verticalArrangement = Arrangement.spacedBy(10.dp), modifier = Modifier.padding(16.dp)) {
         Text(
@@ -99,6 +100,7 @@ fun ProductsList(products: List<Product>) {
         )
         LazyColumn() {
             items(productsInner){product ->
+
                 Card(
                     elevation = 4.dp,
                     shape = RoundedCornerShape(8.dp),
@@ -124,13 +126,12 @@ fun ProductsList(products: List<Product>) {
                             Row(horizontalArrangement = Arrangement.End,
                                 modifier = Modifier.fillMaxWidth()
                             ) {
-                                IconButton(onClick = { showDialog = true } ){
+                                IconButton(onClick = { showDialogEdit = true } ){
                                     Icon( Icons.Filled.Edit, contentDescription = "Edit product")
                                 }
 
                                 IconButton(onClick = {
-                                    ServiceRepository.productRepository.delete(product.serialNumber)
-                                    productsInner = ServiceRepository.productRepository.list()
+                                    showDialogDelete = true
                                 }){
                                     Icon( Icons.Filled.Clear, contentDescription = "Delete product")
                                 }
@@ -151,8 +152,21 @@ fun ProductsList(products: List<Product>) {
 
                     }
                 }
+                MyAlertDialog(showDialogDelete, deleteDialogContent,
+                    {
+                        showDialogDelete = false
+                    },
+                    {
+                        showDialogDelete = false
+                        ServiceRepository.productRepository.delete(product.serialNumber)
+                        productsInner = ServiceRepository.productRepository.list()
+                    }
+                )
+                MyAlertDialog(showDialogEdit, editDialogContent, {showDialogEdit = false}, {showDialogEdit = false})
             }
         }
     }
+
+    return productsInner
 
 }
