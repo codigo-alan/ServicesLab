@@ -3,11 +3,8 @@ package repositories.exposed
 import interfaces.ProductRepository
 import models.product.Product
 import models.product.exposed.ProductDaoTable
-import org.jetbrains.exposed.sql.ResultRow
+import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
-import org.jetbrains.exposed.sql.deleteWhere
-import org.jetbrains.exposed.sql.insert
-import org.jetbrains.exposed.sql.selectAll
 import org.jetbrains.exposed.sql.transactions.transaction
 
 class ProductRepositoryExposed : ProductRepository {
@@ -35,6 +32,24 @@ class ProductRepositoryExposed : ProductRepository {
     override fun delete(serialNumber: String) {
         transaction {
             ProductDaoTable.deleteWhere { ProductDaoTable.serialNumber eq serialNumber }
+        }
+    }
+
+    override fun searchByOwner(owner: String): List<Product> {
+        transaction {
+            products = ProductDaoTable.select { ProductDaoTable.owner.lowerCase() eq owner.lowercase() }.map(::dbToModel)
+        }
+        return products
+    }
+
+    override fun update(productSerialNumber: String, newProduct: Product) {
+        transaction {
+            ProductDaoTable.update({ ProductDaoTable.serialNumber eq productSerialNumber }){
+                it[serialNumber] = newProduct.serialNumber
+                it[model] = newProduct.model
+                it[owner] = newProduct.owner
+                it[service] = newProduct.service
+            }
         }
     }
 

@@ -9,8 +9,8 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Clear
-import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -30,6 +30,7 @@ fun AddProductForm() {
 
     var product = Product(productSerialNumber, productModel, productOwner, productService)
     var products by remember { mutableStateOf(ServiceRepository.productRepository.list()) }
+    var productsFiltered by remember { mutableStateOf(ServiceRepository.productRepository.list()) }
 
     LazyRow() {
         item {
@@ -70,6 +71,7 @@ fun AddProductForm() {
                     onClick = {
                         ServiceRepository.productRepository.insert(product)
                         products = ServiceRepository.productRepository.list()
+                        productsFiltered = ServiceRepository.productRepository.list()
                               },
                     ) {
                     Text("Add Product")
@@ -77,19 +79,52 @@ fun AddProductForm() {
             }
         }
         item() {
-            //products = ProductsList(products)
-            ProductsList(products) {
-                ServiceRepository.productRepository.delete(it.serialNumber)
-                products = ServiceRepository.productRepository.list()
-            }
+            ProductsList(
+                productsFiltered,
+                {
+                    ServiceRepository.productRepository.delete(it.serialNumber)
+                    products = ServiceRepository.productRepository.list()
+                    productsFiltered = ServiceRepository.productRepository.list()
+                },
+                {
+                    productsFiltered = if (it.isEmpty()) {
+                        products
+                    } else {
+                        products.filter { product: Product -> it.lowercase() in product.owner.lowercase() }
+                    }
+                }
+            )
         }
     }
+}
+
+@Composable
+fun SearchBar(
+    onTextChange: (String) -> Unit
+){
+    var searchText by remember { mutableStateOf("") }
+
+    Surface(
+        modifier = Modifier.width(240.dp)
+    ){
+            OutlinedTextField(
+                value = searchText,
+                label = {Icon( Icons.Filled.Search, contentDescription = "Search product")},
+                singleLine = true,
+                onValueChange = {
+                                    searchText = it
+                                    onTextChange(it)
+                                },
+                modifier = Modifier.fillMaxWidth()
+            )
+    }
+
 }
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 @Preview
-fun ProductsList(products: List<Product>, onDelete: (Product) -> Unit) {
+fun ProductsList(products: List<Product>, onDelete: (Product) -> Unit, onSearchText: (String) -> Unit) {
 
     var showDialogEdit by remember { mutableStateOf(false) }
     var showDialogDelete by remember { mutableStateOf(false) }
@@ -99,10 +134,17 @@ fun ProductsList(products: List<Product>, onDelete: (Product) -> Unit) {
     val editDialogContent = listOf("Edit Product", "Not implemented yet.")
 
     Column(verticalArrangement = Arrangement.spacedBy(10.dp), modifier = Modifier.padding(16.dp)) {
-        Text(
-            text = "Products list",
-            style = MaterialTheme.typography.titleLarge,
-        )
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween,
+            modifier = Modifier.width(480.dp)
+        ) {
+            Text(
+                text = "Products list",
+                style = MaterialTheme.typography.titleLarge,
+            )
+            SearchBar { onSearchText(it) }
+        }
         LazyColumn() {
             items(products){product ->
 
