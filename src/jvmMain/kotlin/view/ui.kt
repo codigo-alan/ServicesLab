@@ -155,10 +155,6 @@ fun ProductsList(products: List<Product>, onDelete: (Product) -> Unit) {
                             Text(text = product.serialNumber, style = MaterialTheme.typography.bodyLarge)
                             Text(text = product.service, style = MaterialTheme.typography.bodyLarge)
                         }
-                        Text(
-                            text = product.owner,
-                            style = MaterialTheme.typography.bodyMedium
-                        )
 
                     }
                 }
