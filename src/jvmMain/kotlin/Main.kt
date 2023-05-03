@@ -19,10 +19,6 @@ import view.AddProductForm
 fun App() {
 
     MaterialTheme() {
-        /*LazyRow() {
-            item { AddProductForm() }
-            //item { ProductsList() }
-        }*/
         AddProductForm()
     }
 }
