@@ -13,8 +13,8 @@ class DatabaseConnection(private val productRepository: ProductRepository) {
 
     fun connect(){
         if (productRepository is ProductRepositoryExposed){
-            Database.connect("jdbc:postgresql://localhost:5432/serviceslab", driver = "org.postgresql.Driver", user = "serviceslab", password = "serviceslab") //Alan.
-            //Database.connect("jdbc:postgresql://localhost:5432/serviceslab", driver = "org.postgresql.Driver", user = "sjo") //ITB.
+            //Database.connect("jdbc:postgresql://localhost:5432/serviceslab", driver = "org.postgresql.Driver", user = "serviceslab", password = "serviceslab") //Alan.
+            Database.connect("jdbc:postgresql://localhost:5432/serviceslab", driver = "org.postgresql.Driver", user = "sjo") //ITB.
 
             transaction {
                 addLogger(StdOutSqlLogger)
