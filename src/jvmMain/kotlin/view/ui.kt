@@ -95,10 +95,9 @@ fun AddProductForm() {
                     }
                 },
                 { serial, productUpdated ->
-                    println(serial)
-                    println(productUpdated)
                     ServiceRepository.productRepository.update(serial, productUpdated)
                     products = ServiceRepository.productRepository.list()
+                    productsFiltered = ServiceRepository.productRepository.list()
                 },
             )
         }
@@ -141,7 +140,6 @@ fun ProductsList(
     var showDialogEdit by remember { mutableStateOf(false) }
     var showDialogDelete by remember { mutableStateOf(false) }
     var productSelected by remember { mutableStateOf(Product("","","","")) }
-    //var productUpdated by remember { mutableStateOf(Product("","","","")) }
 
     val deleteDialogContent = listOf("Delete Product", "Do you want to delete this product?")
 
@@ -186,7 +184,7 @@ fun ProductsList(
                                 modifier = Modifier.fillMaxWidth()
                             ) {
 
-                                //Edit button DEBUG
+                                //Edit button
                                 IconButton(
                                     onClick = {
                                         showDialogEdit = true

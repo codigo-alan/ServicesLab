@@ -10,7 +10,6 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import models.product.Product
-import services.ServiceRepository
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
@@ -23,7 +22,9 @@ fun UpdateDialog(state: Boolean, product: Product, onDismiss: () -> Unit, onConf
             onDismissRequest = {onDismiss()},
             text = {
                 UpdateForm(product) {
-                    onConfirm(it) }
+                    //onConfirm(it)
+                    productUpdated = it
+                }
             },
             confirmButton = {
                 Button(onClick = { onConfirm(productUpdated) }) {
@@ -40,7 +41,7 @@ fun UpdateDialog(state: Boolean, product: Product, onDismiss: () -> Unit, onConf
 }
 
 @Composable
-fun UpdateForm(product: Product, onSave: (productUpdated: Product) -> Unit){
+fun UpdateForm(product: Product, onChangeField: (productUpdated: Product) -> Unit){
 
     var productModel by remember { mutableStateOf(product.model) }
     var productSerialNumber by remember { mutableStateOf(product.serialNumber) }
@@ -58,36 +59,48 @@ fun UpdateForm(product: Product, onSave: (productUpdated: Product) -> Unit){
             value = productModel,
             label = { Text("Product model:") },
             singleLine = true,
-            onValueChange = { productModel = it  },
+            onValueChange = {
+                                productModel = it
+                                onChangeField(productUpdated)
+                            },
             modifier = Modifier.fillMaxWidth()
         )
         OutlinedTextField(
             value = productSerialNumber,
             label = { Text("Product S/N") },
             singleLine = true,
-            onValueChange = { productSerialNumber = it },
+            onValueChange = {
+                productSerialNumber = it
+                onChangeField(productUpdated)
+                            },
             modifier = Modifier.fillMaxWidth()
         )
         OutlinedTextField(
             value = productOwner,
             label = { Text("Owner company:") },
             singleLine = true,
-            onValueChange = { productOwner = it },
+            onValueChange = {
+                productOwner = it
+                onChangeField(productUpdated)
+                            },
             modifier = Modifier.fillMaxWidth()
         )
         OutlinedTextField(
             value = productService,
             label = { Text("Service type:") },
             singleLine = true,
-            onValueChange = { productService = it },
+            onValueChange = {
+                onChangeField(productUpdated)
+                productService = it
+                            },
             modifier = Modifier.fillMaxWidth()
         )
-        Button(
+        /*Button(
             onClick = {
                 onSave(productUpdated)
             },
         ) {
             Text("Add Product")
-        }
+        }*/
     }
 }
