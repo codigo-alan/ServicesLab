@@ -95,12 +95,5 @@ fun UpdateForm(product: Product, onChangeField: (productUpdated: Product) -> Uni
                             },
             modifier = Modifier.fillMaxWidth()
         )
-        /*Button(
-            onClick = {
-                onSave(productUpdated)
-            },
-        ) {
-            Text("Add Product")
-        }*/
     }
 }
