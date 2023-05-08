@@ -10,6 +10,7 @@ import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material.icons.filled.List
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.*
@@ -92,7 +93,13 @@ fun AddProductForm() {
                     } else {
                         products.filter { product: Product -> it.lowercase() in product.owner.lowercase() }
                     }
-                }
+                },
+                { serial, productUpdated ->
+                    println(serial)
+                    println(productUpdated)
+                    ServiceRepository.productRepository.update(serial, productUpdated)
+                    products = ServiceRepository.productRepository.list()
+                },
             )
         }
     }
@@ -124,14 +131,19 @@ fun SearchBar(
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 @Preview
-fun ProductsList(products: List<Product>, onDelete: (Product) -> Unit, onSearchText: (String) -> Unit) {
+fun ProductsList(
+    products: List<Product>,
+    onDelete: (Product) -> Unit,
+    onSearchText: (String) -> Unit,
+    onEdit: (String, Product) -> Unit
+) {
 
     var showDialogEdit by remember { mutableStateOf(false) }
     var showDialogDelete by remember { mutableStateOf(false) }
     var productSelected by remember { mutableStateOf(Product("","","","")) }
+    //var productUpdated by remember { mutableStateOf(Product("","","","")) }
 
     val deleteDialogContent = listOf("Delete Product", "Do you want to delete this product?")
-    val editDialogContent = listOf("Edit Product", "Not implemented yet.")
 
     Column(verticalArrangement = Arrangement.spacedBy(10.dp), modifier = Modifier.padding(16.dp)) {
         Row(
@@ -173,8 +185,14 @@ fun ProductsList(products: List<Product>, onDelete: (Product) -> Unit, onSearchT
                             Row(horizontalArrangement = Arrangement.End,
                                 modifier = Modifier.fillMaxWidth()
                             ) {
-                                //Edit button
-                                IconButton(onClick = { showDialogEdit = true } ){
+
+                                //Edit button DEBUG
+                                IconButton(
+                                    onClick = {
+                                        showDialogEdit = true
+                                        productSelected = product
+                                    }
+                                ){
                                     Icon( Icons.Filled.Edit, contentDescription = "Edit product")
                                 }
 
@@ -187,6 +205,7 @@ fun ProductsList(products: List<Product>, onDelete: (Product) -> Unit, onSearchT
                                 ){
                                     Icon( Icons.Filled.Clear, contentDescription = "Delete product")
                                 }
+
                             }
                         }
                         Row(
@@ -211,7 +230,13 @@ fun ProductsList(products: List<Product>, onDelete: (Product) -> Unit, onSearchT
                     }
                 )
                 //Edit dialog
-                MyAlertDialog(showDialogEdit, editDialogContent, {showDialogEdit = false}, {showDialogEdit = false})
+                UpdateDialog(showDialogEdit, productSelected,
+                    {showDialogEdit = false},
+                    {
+                        showDialogEdit = false
+                        onEdit(productSelected.serialNumber, it)
+                    }
+                )
             }
         }
     }
