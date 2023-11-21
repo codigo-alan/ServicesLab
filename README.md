@@ -6,6 +6,22 @@ This is a project aimed at showcasing the usage of Kotlin Multiplatform 📱. It
 
 Program to keep a record of products entering for repair or maintenance at a electronic laboratory.
 
+## Getting Started
+
+Follow these instructions to run on your local machine for development and testing purposes.
+* Create a database, and create a table 'Products' on it.
+* Establish a connection to the created database using the DatabaseConnection class.
+```
+Database.connect("jdbc:postgresql://localhost:5432/serviceslab", driver = "org.postgresql.Driver", user = "serviceslab", password = "serviceslab")
+```
+
+### Prerequisites
+
+* Install PostgreSQL ✔
+* Install Java JDK ✔
+* Install de Kotlin compiler, or use Gradle or Maven instead ✔
+
+
 ### Technologies
 
 * Kotlin multiplatform
