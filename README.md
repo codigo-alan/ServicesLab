@@ -12,7 +12,7 @@ Follow these instructions to run on your local machine for development and testi
 * Create a database, and create a table 'Products' on it.
 * Establish a connection to the created database using the DatabaseConnection class.
 ```
-Database.connect("jdbc:postgresql://localhost:5432/serviceslab", driver = "org.postgresql.Driver", user = "serviceslab", password = "serviceslab")
+Database.connect("jdbc:postgresql://localhost:5432/yourdbname", driver = "org.postgresql.Driver", user = "yourdbuser", password = "yourdbpassword")
 ```
 
 ### Prerequisites
