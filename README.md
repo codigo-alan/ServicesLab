@@ -26,7 +26,7 @@ Database.connect("jdbc:postgresql://localhost:5432/yourdbname", driver = "org.po
 
 ### Technologies
 
-* Kotlin multiplatform
+* Compose multiplatform
 * Gradle
 * PostgreSQL
 * ORM: Exposed
