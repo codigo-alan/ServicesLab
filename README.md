@@ -1,6 +1,6 @@
 # ServicesLab
 
-This is a project aimed at showcasing the usage of Kotlin Multiplatform 📱. 
+This is a project aimed at showcasing the usage of Compose Multiplatform to create a desktop application ⌨. 
 
 It is also part of my ongoing learning process. The development has been structured in a way that allows us to abstract the database used from the code ☑
 
